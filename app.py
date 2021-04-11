@@ -6,6 +6,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import base64
+import os
 
 def zone(hr):
     m=189
@@ -55,22 +57,24 @@ def home():
     df_heartbeats['zones']=df_heartbeats.heartbeat.apply(zone)
     results['zones']=json.dumps(list(df_heartbeats['zones']))
 
-    # plotting grahp-1
-    fig = plt.figure()
+    # plotting zone bar graph
     df_heartbeats.zones.plot(kind='bar')
-    img_data=fig2data(fig)
-    results['shape-1']=img_data.shape
-    # results['image-1']=json.dumps(img_data, cls=NumpyEncoder)
+    plt.savefig('zone_bar_chart.png')
+    encoded = base64.b64encode(open("zone_bar_chart.png", "rb").read())
+    os.remove("zone_bar_chart.png")
+    results['zone_bar_chart']=str(encoded)
 
-    #plotting grahp-2
-    fig = plt.figure()
+    #plotting heatmap
     x=df_heartbeats.zones
     sns.heatmap(np.array(x).reshape(len(x),1), cmap="YlGnBu")
-    img_data=fig2data(fig)
-    results['shape-2']=img_data.shape
-    # results['image-2']=json.dumps(img_data, cls=NumpyEncoder)
+    plt.savefig('heatmap.png')
+    encoded = base64.b64encode(open("heatmap.png", "rb").read())
+    os.remove("heatmap.png")
+    results['heatmap']=str(encoded)
+    
     
     return json.dumps(results)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
+
