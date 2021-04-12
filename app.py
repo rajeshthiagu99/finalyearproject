@@ -22,19 +22,6 @@ def zone(hr):
     if hr>(0.92*m):
         return 4
 
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return json.JSONEncoder.default(self, obj)
-
-def fig2data ( fig ):
-    fig.canvas.draw ( )
-    w,h = fig.canvas.get_width_height()
-    buf = np.fromstring ( fig.canvas.tostring_argb(), dtype=np.uint8 )
-    buf.shape = ( w, h,4 )
-    buf = np.roll ( buf, 3, axis = 2 )
-    return buf
 
 app = flask.Flask(__name__)
 
@@ -62,7 +49,7 @@ def home():
     plt.savefig('zone_bar_chart.png')
     encoded = base64.b64encode(open("zone_bar_chart.png", "rb").read())
     os.remove("zone_bar_chart.png")
-    results['zone_bar_chart']=str(encoded)
+    results['zone_bar_chart']=encoded.decode("utf-8")
 
     #plotting heatmap
     x=df_heartbeats.zones
@@ -70,11 +57,10 @@ def home():
     plt.savefig('heatmap.png')
     encoded = base64.b64encode(open("heatmap.png", "rb").read())
     os.remove("heatmap.png")
-    results['heatmap']=str(encoded)
+    results['heatmap']= encoded.decode("utf-8")
     
     
     return json.dumps(results)
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
-
