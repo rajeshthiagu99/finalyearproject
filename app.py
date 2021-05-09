@@ -63,20 +63,6 @@ def home():
     warm_up_time=(time_to_reach-start_time).astype('timedelta64[s]')
     output.append({'name':'optimal warm up time','image':False,'data':str(warm_up_time)})
 
-    # updating time
-
-    df_distances['time']=pd.to_datetime(df_distances['time'])
-    df_distances['min']=df_distances['time'].dt.minute
-    df_distances['second']=df_distances['time'].dt.second
-    df_distances['time']=df_distances['min'].astype(str)+":"+df_distances['second'].astype(str)
-    df_distances.drop(columns=['min','second'],inplace=True)
-
-    df_heartbeats['time']=pd.to_datetime(df_heartbeats['time'])
-    df_heartbeats['min']=df_heartbeats['time'].dt.minute
-    df_heartbeats['second']=df_heartbeats['time'].dt.second
-    df_heartbeats['time']=df_heartbeats['min'].astype(str)+":"+df_heartbeats['second'].astype(str)
-    df_heartbeats.drop(columns=['min','second'],inplace=True)
-
 
 
     #calculation of vo2 max
@@ -93,11 +79,22 @@ def home():
     #zone calculation
     df_heartbeats['zones']=df_heartbeats.heartbeat.apply(zone)
 
+
+    #updating time
+    df_distances['time']=pd.to_datetime(df_distances['time'])
+    time_seconds=[0]
+    for i in range(1,len(df_distances)): 
+        time_seconds.append((df_distances['time'].values[i]-df_distances['time'].values[i-1]).astype('timedelta64[s]').astype('int'))
+    df_distances['time']=time_seconds
+    df_distances['time']=df_distances['time'].cumsum()
+    df_heartbeats['time']=df_distances['time']
+
     # plotting zone bar graph
     df_heartbeats.zones.plot(kind='bar')
     plt.xlabel('time')
     plt.ylabel('zones')
     plt.title('Bar chart for zones across the run calculated from heartbeat')
+    plt.xticks([int(df_heartbeats.time.quantile(i*0.1)) for i in range(1,9)])
     plt.savefig('zone_bar_chart.png')
     encoded = base64.b64encode(open("zone_bar_chart.png", "rb").read())
     os.remove("zone_bar_chart.png")
@@ -105,10 +102,10 @@ def home():
 
     #plotting heatmap
     x=df_heartbeats.zones
-    print(np.array(x).reshape(len(x),1))
     sns.heatmap(np.array(x).reshape(len(x),1), cmap="YlGnBu")
     plt.xlabel('zones')
     plt.ylabel('time')
+    plt.yticks([int(df_heartbeats.time.quantile(i*0.1)) for i in range(1,9)])
     plt.title('Heatmap for zones across the run calculated from heartbeat')
     plt.savefig('heatmap.png')
     encoded = base64.b64encode(open("heatmap.png", "rb").read())
