@@ -82,6 +82,9 @@ def home():
 
     # plotting zone bar graph
     df_heartbeats.zones.plot(kind='bar')
+    plt.xlabel('time')
+    plt.ylabel('zones')
+    plt.title('Bar chart for zones across the run calculated from heartbeat')
     plt.savefig('zone_bar_chart.png')
     encoded = base64.b64encode(open("zone_bar_chart.png", "rb").read())
     os.remove("zone_bar_chart.png")
@@ -90,6 +93,9 @@ def home():
     #plotting heatmap
     x=df_heartbeats.zones
     sns.heatmap(np.array(x).reshape(len(x),1), cmap="YlGnBu")
+    plt.xlabel('zones')
+    plt.ylabel('time')
+    plt.title('Heatmap for zones across the run calculated from heartbeat')
     plt.savefig('heatmap.png')
     encoded = base64.b64encode(open("heatmap.png", "rb").read())
     os.remove("heatmap.png")
