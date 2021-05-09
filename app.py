@@ -105,12 +105,22 @@ def home():
     sns.heatmap(np.array(x).reshape(len(x),1), cmap="YlGnBu")
     plt.xlabel('zones')
     plt.ylabel('time')
-    plt.yticks([int(df_heartbeats.time.quantile(i*0.1)) for i in range(1,9)])
     plt.title('Heatmap for zones across the run calculated from heartbeat')
     plt.savefig('heatmap.png')
     encoded = base64.b64encode(open("heatmap.png", "rb").read())
     os.remove("heatmap.png")
     output.append({'name':'heatmap','image':True,'data':encoded.decode("utf-8")})
+
+    # plotting time vs distance graph
+    plt.plot(df_distances['time'],df_distances['distance covered'])
+    plt.xlabel('time')
+    plt.ylabel('distance')
+    plt.title('time vs distance chart')
+    plt.xticks([int(df_distances.time.quantile(i*0.1)) for i in range(1,9)])
+    plt.savefig('time_vs_distance_chart.png')
+    encoded = base64.b64encode(open("time_vs_distance_chart.png", "rb").read())
+    os.remove("time_vs_distance_chart.png")
+    output.append({'name':'time vs distance_chart','image':True,'data':encoded.decode("utf-8")})
 
 
     return json.dumps(output)
