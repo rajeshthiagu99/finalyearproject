@@ -92,6 +92,7 @@ def home():
 
     #plotting heatmap
     x=df_heartbeats.zones
+    print(np.array(x).reshape(len(x),1))
     sns.heatmap(np.array(x).reshape(len(x),1), cmap="YlGnBu")
     plt.xlabel('zones')
     plt.ylabel('time')
