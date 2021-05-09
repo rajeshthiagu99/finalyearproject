@@ -63,6 +63,19 @@ def home():
     warm_up_time=(time_to_reach-start_time).astype('timedelta64[s]')
     output.append({'name':'optimal warm up time','image':False,'data':str(warm_up_time)})
 
+    # updating time
+
+    df_distances['time']=pd.to_datetime(df_distances['time'])
+    df_distances['min']=df_distances['time'].dt.minute
+    df_distances['second']=df_distances['time'].dt.second
+    df_distances['time']=df_distances['min'].astype(str)+":"+df_distances['second'].astype(str)
+    df_distances.drop(columns=['min','second'],inplace=True)
+
+    df_heartbeats['time']=pd.to_datetime(df_heartbeats['time'])
+    df_heartbeats['min']=df_heartbeats['time'].dt.minute
+    df_heartbeats['second']=df_heartbeats['time'].dt.second
+    df_heartbeats['time']=df_heartbeats['min'].astype(str)+":"+df_heartbeats['second'].astype(str)
+    df_heartbeats.drop(columns=['min','second'],inplace=True)
 
 
 
