@@ -53,6 +53,18 @@ def home():
     #converting to dataframes
     df_distances=pd.DataFrame(data['distances'])
     df_heartbeats=pd.DataFrame(data['heartbeats'])
+    df_all=df_distances.merge(df_heartbeats,on='time')
+
+    #calculating time for warmup
+    df_all['time']=pd.to_datetime(df_all['time'])
+    start_time=df_all.sort_values('time')['time'].values[0]
+    df_all=df_all[df_all['heartbeat']>df_all['heartbeat'].mean()]
+    time_to_reach=df_all.sort_values('time')['time'].values[0]
+    warm_up_time=(time_to_reach-start_time).astype('timedelta64[s]')
+    output.append({'name':'optimal warm up time','image':False,'data':str(warm_up_time)})
+
+
+
 
     #calculation of vo2 max
     vo2max=15*(max(df_heartbeats['heartbeat'])/min(df_heartbeats['heartbeat']))
@@ -86,5 +98,5 @@ def home():
 
     return json.dumps(output)
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
