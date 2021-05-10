@@ -85,7 +85,7 @@ def home():
     plt.show()
     encoded_1 = base64.b64encode(open("zone_bar_chart.png", "rb").read())
     os.remove("zone_bar_chart.png")
-    output.append({'name':'zone_bar_chart','image':True,'data':encoded.decode("utf-8")})
+    output.append({'name':'zone_bar_chart','image':True,'data':encoded_1.decode("utf-8")})
     #plotting heatmap
     x=df_heartbeats.zones
     sns.heatmap(np.array(x).reshape(len(x),1), cmap="YlGnBu")
@@ -96,7 +96,7 @@ def home():
     plt.show()
     encoded_2 = base64.b64encode(open("heatmap.png", "rb").read())
     os.remove("heatmap.png")
-    output.append({'name':'heatmap','image':True,'data':encoded.decode("utf-8")})
+    output.append({'name':'heatmap','image':True,'data':encoded_2.decode("utf-8")})
     # plotting time vs distance graph
     plt.plot(df_distances['time'],df_distances['distance covered'])
     plt.xlabel('time')
@@ -107,7 +107,9 @@ def home():
     plt.show()
     encoded_3 = base64.b64encode(open("time_vs_distance_chart.png", "rb").read())
     os.remove("time_vs_distance_chart.png")
-    output.append({'name':'time vs distance_chart','image':True,'data':encoded.decode("utf-8")})
+    output.append({'name':'time vs distance_chart','image':True,'data':encoded_3.decode("utf-8")})
+
     return json.dumps(output)
+
 # if __name__ == "__main__":
 #     app.run(debug=True)
