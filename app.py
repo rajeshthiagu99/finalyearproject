@@ -41,20 +41,15 @@ def vo2review(vo2max):
 
 
 app = flask.Flask(__name__)
-
-
 @app.route('/', methods=['POST'])
 def home():
     output=[]
-
     #getting input
     data = request.json
-
     #converting to dataframes
     df_distances=pd.DataFrame(data['distances'])
     df_heartbeats=pd.DataFrame(data['heartbeats'])
     df_all=df_distances.merge(df_heartbeats,on='time')
-
     #calculating time for warmup
     df_all['time']=pd.to_datetime(df_all['time'])
     start_time=df_all.sort_values('time')['time'].values[0]
@@ -62,24 +57,16 @@ def home():
     time_to_reach=df_all.sort_values('time')['time'].values[0]
     warm_up_time=(time_to_reach-start_time).astype('timedelta64[s]')
     output.append({'name':'optimal warm up time','image':False,'data':str(warm_up_time)})
-
-
-
     #calculation of vo2 max
     vo2max=15*(max(df_heartbeats['heartbeat'])/min(df_heartbeats['heartbeat']))
     output.append({'name':'vo2max','image':False,'data':vo2max})
-
     #analysing of vo2 max
     vo2_review_data=vo2review(vo2max)
     output.append({'name':'vo2max review','image':False,'data':vo2_review_data})
-
     #max heartrate
     output.append({'name':'max_heartrate','image':False,'data':max(df_heartbeats['heartbeat'])})
-
     #zone calculation
     df_heartbeats['zones']=df_heartbeats.heartbeat.apply(zone)
-
-
     #updating time
     df_distances['time']=pd.to_datetime(df_distances['time'])
     time_seconds=[0]
@@ -88,7 +75,6 @@ def home():
     df_distances['time']=time_seconds
     df_distances['time']=df_distances['time'].cumsum()
     df_heartbeats['time']=df_distances['time']
-
     # plotting zone bar graph
     df_heartbeats.zones.plot(kind='bar')
     plt.xlabel('time')
@@ -99,7 +85,6 @@ def home():
     encoded = base64.b64encode(open("zone_bar_chart.png", "rb").read())
     os.remove("zone_bar_chart.png")
     output.append({'name':'zone_bar_chart','image':True,'data':encoded.decode("utf-8")})
-
     #plotting heatmap
     x=df_heartbeats.zones
     sns.heatmap(np.array(x).reshape(len(x),1), cmap="YlGnBu")
@@ -110,7 +95,6 @@ def home():
     encoded = base64.b64encode(open("heatmap.png", "rb").read())
     os.remove("heatmap.png")
     output.append({'name':'heatmap','image':True,'data':encoded.decode("utf-8")})
-
     # plotting time vs distance graph
     plt.plot(df_distances['time'],df_distances['distance covered'])
     plt.xlabel('time')
@@ -121,9 +105,6 @@ def home():
     encoded = base64.b64encode(open("time_vs_distance_chart.png", "rb").read())
     os.remove("time_vs_distance_chart.png")
     output.append({'name':'time vs distance_chart','image':True,'data':encoded.decode("utf-8")})
-
-
     return json.dumps(output)
-
 # if __name__ == "__main__":
 #     app.run(debug=True)
