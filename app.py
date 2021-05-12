@@ -91,11 +91,11 @@ def home():
     os.remove("heatmap_1.png")
     output.append({'name':'heatmap','image':True,'data':encoded_2.decode("utf-8")})
     # plotting time vs distance graph
-    plt.plot(df_distances['time'],df_distances['distance covered'])
+    plt.plot(pd.to_datetime(df_distances['time']).dt.time,df_distances['distance covered'])
     plt.xlabel('time')
     plt.ylabel('distance')
     plt.title('time vs distance chart')
-    # plt.xticks([int(df_distances.time.quantile(i*0.1)) for i in range(1,9)])
+    plt.xticks(rotation=90)
     plt.savefig('time_vs_distancechart.png')
     plt.clf()
     encoded_3 = base64.b64encode(open("time_vs_distancechart.png", "rb").read())
