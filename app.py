@@ -67,14 +67,14 @@ def home():
     output.append({'name':'max_heartrate','image':False,'data':max(df_heartbeats['heartbeat'])})
     #zone calculation
     df_heartbeats['zones']=df_heartbeats.heartbeat.apply(zone)
-    #updating time
-    df_distances['time']=pd.to_datetime(df_distances['time'])
-    time_seconds=[0]
-    for i in range(1,len(df_distances)): 
-        time_seconds.append((df_distances['time'].values[i]-df_distances['time'].values[i-1]).astype('timedelta64[s]').astype('int'))
-    df_distances['time']=time_seconds
-    df_distances['time']=df_distances['time'].cumsum()
-    df_heartbeats['time']=df_distances['time']
+    # #updating time
+    # df_distances['time']=pd.to_datetime(df_distances['time'])
+    # time_seconds=[0]
+    # for i in range(1,len(df_distances)): 
+    #     time_seconds.append((df_distances['time'].values[i]-df_distances['time'].values[i-1]).astype('timedelta64[s]').astype('int'))
+    # df_distances['time']=time_seconds
+    # df_distances['time']=df_distances['time'].cumsum()
+    # df_heartbeats['time']=df_distances['time']
     # plotting zone bar graph
     df_heartbeats.zones.plot(kind='bar')
     plt.xlabel('time')
