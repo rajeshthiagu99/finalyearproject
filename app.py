@@ -91,7 +91,7 @@ def home():
     os.remove("heatmap_1.png")
     output.append({'name':'heatmap','image':True,'data':encoded_2.decode("utf-8")})
     # plotting time vs distance graph
-    plt.plot(pd.to_datetime(df_distances['time']).dt.time,df_distances['distance covered'])
+    plt.plot(df_distances['time'],df_distances['distance covered'])
     plt.xlabel('time')
     plt.ylabel('distance')
     plt.title('time vs distance chart')
