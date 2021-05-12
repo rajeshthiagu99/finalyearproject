@@ -97,7 +97,6 @@ def home():
     plt.title('time vs distance chart')
     # plt.xticks([int(df_distances.time.quantile(i*0.1)) for i in range(1,9)])
     plt.savefig('time_vs_distancechart.png')
-    
     plt.clf()
     encoded_3 = base64.b64encode(open("time_vs_distancechart.png", "rb").read())
     os.remove("time_vs_distancechart.png")
